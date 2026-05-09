@@ -4,11 +4,26 @@ const loadlessons =()=>{
     .then((json)=>displayLesson(json.data));
 };
 
+const removeActive=()=>{
+    const lessonButtons=document.querySelectorAll(".lesson-btn");
+    lessonButtons.forEach((btn)=>btn.classList.remove("active"));
+
+}
+
 const loadLevelWord =(id)=>{
     const url =`https://openapi.programming-hero.com/api/level/${id}`;
     fetch(url)
     .then(res=>res.json())
-    .then((json)=>displayLevelWord(json.data));
+    .then((json)=>{
+        const clickBtn=document.getElementById(`lesson-btn-${id}`);
+        // console.log(clickBtn);
+        removeActive();
+        clickBtn.classList.add("active");
+
+
+        displayLevelWord(json.data)
+    
+    });
 };
 
 const displayLevelWord=(words)=>{
@@ -37,7 +52,7 @@ const displayLevelWord=(words)=>{
     <p class="font-semibold">Meaning / Pronunciation</p>
     <div class="text-2xl font-medium font-bangla">${word.meaning || 'Meaning not available'} / ${word.pronunciation || 'Pronunciation not available'}</div>
     <div class="flex justify-between items-center">
-      <button class="btn bg-[#4f83b410]"><i class="fa-solid fa-circle-info"></i></button>
+      <button class="btn bg-[#4f83b410]" onclick="my_modal_5.showModal()"><i class="fa-solid fa-circle-info"></i></button>
       <button class="btn bg-[#4485c210]"><i class="fa-solid fa-volume-high"></i></button>
     </div>
   </div>
@@ -52,8 +67,6 @@ const displayLevelWord=(words)=>{
 }
 
 
-
-
 const displayLesson=(Lessons)=>{
     console.log(Lessons);
 
@@ -63,7 +76,7 @@ const displayLesson=(Lessons)=>{
     for(let lesson of Lessons){
         const btnDiv = document.createElement("div");
         btnDiv.innerHTML=`
-        <button onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary"><i class="fa-solid fa-book"></i> Lesson- ${lesson.level_no}</button>
+        <button id="lesson-btn-${lesson.level_no}" onclick="loadLevelWord(${lesson.level_no})" class="btn btn-outline btn-primary lesson-btn"><i class="fa-solid fa-book"></i> Lesson- ${lesson.level_no}</button>
         `;
         levelContainer.appendChild(btnDiv);
     }
